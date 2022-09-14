@@ -1,4 +1,5 @@
 var express = require("express");
+const mongoose = require('mongoose');
 var multer = require("multer");
 var path = require("path");
 var jwt = require("jsonwebtoken");
@@ -9,6 +10,8 @@ const Grid = require("gridfs-stream");
 const methodOverride = require("method-override");
 var router = express.Router();
 var employee = empModel.find({});
+const crypto = require("crypto");
+
 var imgName="";
 var flag;
 
@@ -39,17 +42,20 @@ const storage = new GridFsStorage({
 
 var upload = multer({
   fileFilter: async function (req, file, cb) {
-    cons
-  },
-  storage: multer.diskStorage({
-    destination: async function (req, file, cb) {
-      const destination = "./public/uploads/";
-      cb(null, destination);
-    },
-    filename: function (req, file, cb) {
-      cb(null, file.originalname);
-    },
-  }),
+    console.log(file.originalname);
+    imgName = file.originalname;
+    gfs.files.find({ filename: file.originalname })
+        .toArray((err, files) => {
+          console.log(files ,"type",typeof files , files.length);
+            if (files.length > 0) 
+            {
+              req.fileValidationError = `File Already Exists`;
+                cb(null, false, req.fileValidationError);
+            }
+             else               
+              cb(null, true ,req.body.typeOfFile);
+             })
+  },storage
 }).single("file");
 
 
@@ -78,6 +84,11 @@ router.post("/", upload, async function (req, res, next) {
       });
     });
   } else {
+    var empDetails = new empModel({
+      name: req.body.uname,
+      email: req.body.email,
+      image: imgName,
+    });
     empDetails.save(function (err, req1) {
       if (err) throw err;
       employee.exec(function (err, data) {
