@@ -2,10 +2,7 @@
 <html>
   <head>
     <title><%= title %></title>
-    <link
-      rel="stylesheet"
-      href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"
-    />
+  
     <link rel="stylesheet" href="/stylesheets/style.css" />
     <link
       rel="stylesheet"
@@ -19,6 +16,9 @@
     />
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    
+<script src="https://use.fontawesome.com/753722e90c.js"></script>
+
   </head>
 
   <body>
@@ -113,6 +113,7 @@
               <th>Name</th>
               <th>Email</th>
               <th>Profile Image</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -125,6 +126,25 @@
                 <img src="images/<%= row.image%>" width="80" />
                 <p><%= row.image %></p>
                 <% } %>
+              </td>
+              <td>
+                <a href="images/<%= row.image%>">
+                <button
+                  class="btn btn-sm btn-info"
+                  title="View"
+                  style="margin-right: 5px;"
+                >view
+                </button>
+              </a>
+
+                <a href="images/<%= row.image%>" download>
+                <button
+                class="btn btn-sm btn-primary"
+                title="View"
+                style="margin-right: 5px;"
+              >Dwonload
+              </button>
+              </a>
               </td>
             </tr>
             <% })}else{ %>
@@ -211,6 +231,7 @@
                     <input type="file" class="form-control" name="file" />
                   </div>
                 </div>
+                
 
                 <div class="form-group">
                   <!-- Button -->

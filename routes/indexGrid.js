@@ -4,12 +4,14 @@ var multer = require("multer");
 var path = require("path");
 var jwt = require("jsonwebtoken");
 var empModel = require("../modules/employee");
+var userModel = require("../modules/user");
 const { readdir } = require("node:fs/promises");
 const { GridFsStorage } = require("multer-gridfs-storage");
 const Grid = require("gridfs-stream");
 const methodOverride = require("method-override");
 var router = express.Router();
 var employee = empModel.find({});
+// var user = userModel.find({});
 const crypto = require("crypto");
 
 var imgName = "";
@@ -58,7 +60,7 @@ var upload = multer({
   storage,
 }).single("file");
 
-router.get("/", function (req, res, next) {
+router.get("/home", function (req, res, next) {
   employee.exec(function (err, data) {
     if (err) throw err;
     res.render("index", {
@@ -88,7 +90,7 @@ router.get("/images/:filename", (req, res) => {
   });
 });
 
-router.post("/", upload, async function (req, res, next) {
+router.post("/home", upload, async function (req, res, next) {
   if (req.fileValidationError) {
     employee.exec(function (err, data) {
       if (err) throw err;
@@ -150,6 +152,41 @@ router.post("/search/", function (req, res, next) {
       success: "",
       error: "",
     });
+  });
+});
+
+router.get("/", function (req, res, next) {
+    res.render("login");
+});
+
+router.get("/signup", function (req, res, next) {
+    res.render("signup");
+});
+
+router.post("/login", function (req, res, next) {
+  var username = req.body.username;
+  var password = req.body.password;
+
+  var checkUser = userModel.findOne({ username: username });
+  checkUser.exec((err, data) => {
+    if (err) throw err;
+    var getPassword = data.password;
+    if (password == getPassword) {
+        res.redirect("/home");
+    } else {
+      res.send("Invalid Username or Password");
+    }
+  })
+});
+
+router.post("/signup", function (req, res, next) {
+
+  var userDetails = new userModel({
+  username : req.body.username,
+  password : req.body.password,
+  })
+  userDetails.save(function (err, req1) {
+    res.redirect("/");
   });
 });
 
