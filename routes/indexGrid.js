@@ -140,6 +140,12 @@ router.post("/search/", function (req, res, next) {
   else if (fltrName == "" && fltrEmail == "" && fltrImage != "") {
     var flterParameter = { image: fltrImage };
   } 
+  else if (fltrName != "" && fltrEmail == "" && fltrImage == "") {
+    var flterParameter = { name: fltrName };
+  } 
+  else if (fltrName == "" && fltrEmail != "" && fltrImage == "") {
+    var flterParameter = { email: fltrEmail };
+  } 
   else {
     var flterParameter = {};
   }
