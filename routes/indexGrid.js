@@ -10,10 +10,9 @@ const { GridFsStorage } = require("multer-gridfs-storage");
 const Grid = require("gridfs-stream");
 const methodOverride = require("method-override");
 var router = express.Router();
-var employee = empModel.find({});
 // var user = userModel.find({});
 const crypto = require("crypto");
-
+const store = require("store2");
 var imgName = "";
 var flag;
 
@@ -36,7 +35,7 @@ const storage = new GridFsStorage({
           return reject(err);
         }
         const fileInfo = {
-          filename: file.originalname,
+          filename: file.originalname+"_"+store.get("loggeduser"),
           bucketName: "employee",
         };
         resolve(fileInfo);
@@ -47,9 +46,9 @@ const storage = new GridFsStorage({
 
 var upload = multer({
   fileFilter: async function (req, file, cb) {
-    console.log(file.originalname);
-    imgName = file.originalname;
-    gfs.files.find({ filename: file.originalname }).toArray((err, files) => {
+    console.log(file.originalname+"_"+store.get("loggeduser"));
+    imgName = file.originalname+"_"+store.get("loggeduser");
+    gfs.files.find({ filename: imgName }).toArray((err, files) => {
       console.log(files, "type", typeof files, files.length);
       if (files.length > 0) {
         req.fileValidationError = `File Already Exists`;
@@ -61,6 +60,7 @@ var upload = multer({
 }).single("file");
 
 router.get("/home", function (req, res, next) {
+  var employee = empModel.find({username:store.get("loggeduser")});
   employee.exec(function (err, data) {
     if (err) throw err;
     res.render("index", {
@@ -68,6 +68,7 @@ router.get("/home", function (req, res, next) {
       records: data,
       error: "",
       success: "",
+      loggeduser: store.get("loggeduser"),
     });
   });
 });
@@ -92,6 +93,7 @@ router.get("/images/:filename", (req, res) => {
 
 router.post("/home", upload, async function (req, res, next) {
   if (req.fileValidationError) {
+    var employee = empModel.find({username:store.get("loggeduser")});
     employee.exec(function (err, data) {
       if (err) throw err;
       res.render("index", {
@@ -99,6 +101,7 @@ router.post("/home", upload, async function (req, res, next) {
         records: data,
         error: "Image Already Exist",
         success: "",
+        loggeduser: store.get("loggeduser"),
       });
     });
   } else {
@@ -106,9 +109,11 @@ router.post("/home", upload, async function (req, res, next) {
       name: req.body.uname,
       email: req.body.email,
       image: imgName,
+      username:store.get("loggeduser"),
     });
     empDetails.save(function (err, req1) {
       if (err) throw err;
+      var employee = empModel.find({username:store.get("loggeduser")});
       employee.exec(function (err, data) {
         if (err) throw err;
         res.render("index", {
@@ -116,6 +121,7 @@ router.post("/home", upload, async function (req, res, next) {
           records: data,
           success: "Image Uploaded Successfully",
           error: "",
+          loggeduser: store.get("loggeduser"),
         });
       });
     });
@@ -157,12 +163,19 @@ router.post("/search/", function (req, res, next) {
       records: data,
       success: "",
       error: "",
+      loggeduser: store.get("loggeduser"),
     });
   });
 });
 
 router.get("/", function (req, res, next) {
+    store.clearAll();
     res.render("login");
+});
+
+router.post("/logout", function (req, res, next) {
+  store.clearAll();
+  res.redirect("/");
 });
 
 router.get("/signup", function (req, res, next) {
@@ -178,6 +191,7 @@ router.post("/login", function (req, res, next) {
     if (err) throw err;
     var getPassword = data.password;
     if (password == getPassword) {
+        store.set('loggeduser',username);
         res.redirect("/home");
     } else {
       res.send("Invalid Username or Password");

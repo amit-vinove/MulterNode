@@ -27,9 +27,20 @@
         <div class="navbar-header">
           <a class="navbar-brand" href="#">Image Upload</a>
         </div>
+        <div class="navbar-header" style="float:right">
+          <form method="post" action="/logout"> 
+        <button
+        class="btn btn-sm btn-danger"
+        title="View"
+        type="submit"
+        style="margin-right: 5px;margin-top: 10px;"
+      >Logout</button></form>
+      </div>
+        <div class="navbar-header" style="float:right">
+          <a class="navbar-brand" href="#">User:<%= loggeduser %></a>
+        </div>
       </div>
     </nav>
-
     <div class="container">
       <div class="row">
         <h1>Filter Image Records</h1>
@@ -124,7 +135,6 @@
               <td>
                 <% if(row.image){ %>
                 <img src="images/<%= row.image%>" width="80" />
-                <p><%= row.image %></p>
                 <% } %>
               </td>
               <td>

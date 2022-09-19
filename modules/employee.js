@@ -7,6 +7,7 @@ var employeeSchema =new mongoose.Schema({
 	name: String,
 	email: String,
 	image:String,
+	username:String,
 });
 
 var employeeModel = mongoose.model('Employee', employeeSchema);
