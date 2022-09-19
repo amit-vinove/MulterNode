@@ -125,6 +125,24 @@
               <th>Email</th>
               <th>Profile Image</th>
               <th>Actions</th>
+              <form method="post" action="/sort/">
+                <th>
+                  <select class="form-control" name="sortType">
+                    <option value="name">Sort By</option>
+                    <option value="name" class="form-control">Name</option>
+                    <option value="email" class="form-control">Email</option>
+                  </select>
+                </th>
+                <th>
+                  <button
+                  class="btn btn-sm btn-success"
+                  title="sort"
+                  type="submit"
+                  style="margin-right: 5px;"
+                >Sort
+                </button>
+                </th>
+              </form>
             </tr>
           </thead>
           <tbody>
@@ -134,11 +152,11 @@
               <td><%= row.email %></td>
               <td>
                 <% if(row.image){ %>
-                <img src="images/<%= row.image%>" width="80" />
+                <img src="/images/<%= row.image%>" width="80" />
                 <% } %>
               </td>
               <td>
-                <a href="images/<%= row.image%>">
+                <a href="/images/<%= row.image%>">
                 <button
                   class="btn btn-sm btn-info"
                   title="View"
@@ -147,7 +165,7 @@
                 </button>
               </a>
 
-                <a href="images/<%= row.image%>" download>
+                <a href="/images/<%= row.image%>" download>
                 <button
                 class="btn btn-sm btn-primary"
                 title="View"

@@ -135,25 +135,25 @@ router.post("/search/", function (req, res, next) {
   console.log(fltrName, fltrEmail, fltrImage);
 
   if (fltrName != "" && fltrEmail != "" && fltrImage != "") {
-    var flterParameter = { name: fltrName, email: fltrEmail, image: fltrImage };
+    var flterParameter = { name: fltrName, email: fltrEmail, image: fltrImage, username:store.get("loggeduser") };
   } 
   else if (fltrName != "" && fltrEmail == "" && fltrImage != "") {
-    var flterParameter = { name: fltrName, image: fltrImage };
+    var flterParameter = { name: fltrName, image: fltrImage , username:store.get("loggeduser")};
   }
    else if (fltrName == "" && fltrEmail != "" && fltrImage != "") {
-    var flterParameter = {email: fltrEmail, image: fltrImage };
+    var flterParameter = {email: fltrEmail, image: fltrImage , username:store.get("loggeduser")};
   } 
   else if (fltrName == "" && fltrEmail == "" && fltrImage != "") {
-    var flterParameter = { image: fltrImage };
+    var flterParameter = { image: fltrImage , username:store.get("loggeduser")};
   } 
   else if (fltrName != "" && fltrEmail == "" && fltrImage == "") {
-    var flterParameter = { name: fltrName };
+    var flterParameter = { name: fltrName , username:store.get("loggeduser")};
   } 
   else if (fltrName == "" && fltrEmail != "" && fltrImage == "") {
-    var flterParameter = { email: fltrEmail };
+    var flterParameter = { email: fltrEmail , username:store.get("loggeduser")};
   } 
   else {
-    var flterParameter = {};
+    var flterParameter = {username:store.get("loggeduser")};
   }
   var employeeFilter = empModel.find(flterParameter);
   employeeFilter.exec(function (err, data) {
@@ -167,6 +167,31 @@ router.post("/search/", function (req, res, next) {
     });
   });
 });
+
+router.post("/sort/", function (req, res, next) {
+  var sortType = req.body.sortType;
+  console.log(sortType);
+
+  if (sortType == "name") {
+    var sortParameter = { "name":1 };  
+  } 
+  else if (sortType == "email") {
+    var sortParameter = { "email":1 };  
+  }
+  
+  var employeeFilter = empModel.find({username:'Amitk123'}).sort(sortParameter);
+  employeeFilter.exec(function (err, data) {
+    if (err) throw err;
+    res.render("index", {
+      title: "Image Records",
+      records: data,
+      success: "",
+      error: "",
+      loggeduser: store.get("loggeduser"),
+    });
+  });
+});
+
 
 router.get("/", function (req, res, next) {
     store.clearAll();
