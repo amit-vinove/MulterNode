@@ -132,7 +132,6 @@ router.post("/search/", function (req, res, next) {
   var fltrName = req.body.fltrName;
   var fltrEmail = req.body.fltrEmail;
   var fltrImage = req.body.fltrImage;
-  console.log(fltrName, fltrEmail, fltrImage);
 
   if (fltrName != "" && fltrEmail != "" && fltrImage != "") {
     var flterParameter = { name: fltrName, email: fltrEmail, image: fltrImage, username:store.get("loggeduser") };
