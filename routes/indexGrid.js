@@ -144,7 +144,7 @@ router.post("/search/", function (req, res, next) {
     var flterParameter = {email: fltrEmail, image: fltrImage , username:store.get("loggeduser")};
   } 
   else if (fltrName == "" && fltrEmail == "" && fltrImage != "") {
-    var flterParameter = { image: fltrImage , username:store.get("loggeduser")};
+    var flterParameter = { image: fltrImage+"_"+store.get("loggeduser") , username:store.get("loggeduser")};
   } 
   else if (fltrName != "" && fltrEmail == "" && fltrImage == "") {
     var flterParameter = { name: fltrName , username:store.get("loggeduser")};
@@ -170,7 +170,6 @@ router.post("/search/", function (req, res, next) {
 
 router.post("/sort/", function (req, res, next) {
   var sortType = req.body.sortType;
-  console.log(sortType);
 
   if (sortType == "name") {
     var sortParameter = { "name":1 };  
@@ -179,7 +178,7 @@ router.post("/sort/", function (req, res, next) {
     var sortParameter = { "email":1 };  
   }
   
-  var employeeFilter = empModel.find({username:'Amitk123'}).sort(sortParameter);
+  var employeeFilter = empModel.find({username:store.get("loggeduser")}).sort(sortParameter);
   employeeFilter.exec(function (err, data) {
     if (err) throw err;
     res.render("index", {
