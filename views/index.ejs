@@ -25,7 +25,7 @@
     <nav class="navbar navbar-inverse">
       <div class="container">
         <div class="navbar-header">
-          <a class="navbar-brand" href="#">Image Upload</a>
+          <a class="navbar-brand" href="/home">Image Upload</a>
         </div>
         <div class="navbar-header" style="float:right">
           <form method="post" action="/logout"> 
@@ -123,6 +123,7 @@
             <tr>
               <th>Name</th>
               <th>Email</th>
+              <th>Image Name</th>
               <th>Profile Image</th>
               <th>Actions</th>
               <form method="post" action="/sort/">
@@ -150,6 +151,11 @@
             <tr>
               <td><%= row.name %></td>
               <td><%= row.email %></td>
+              <td>
+                <% if(row.image){ %>
+                <p><%= row.image.split('_')[0] %></p>
+                <% } %>
+              </td>
               <td>
                 <% if(row.image){ %>
                 <img src="/images/<%= row.image%>" width="80" />
