@@ -35,7 +35,7 @@ const storage = new GridFsStorage({
           return reject(err);
         }
         const fileInfo = {
-          filename: file.originalname+"_"+store.get("loggeduser"),
+          filename: file.originalname+"_"+store.get("loggeduser")+"_"+req.body.uploadType,
           bucketName: "employee",
         };
         resolve(fileInfo);
@@ -46,8 +46,8 @@ const storage = new GridFsStorage({
 
 var upload = multer({
   fileFilter: async function (req, file, cb) {
-    console.log(file.originalname+"_"+store.get("loggeduser"));
-    imgName = file.originalname+"_"+store.get("loggeduser");
+    console.log(file.originalname+"_"+store.get("loggeduser")+"_"+req.body.uploadType);
+    imgName = file.originalname+"_"+store.get("loggeduser")+"_"+req.body.uploadType;
     gfs.files.find({ filename: imgName }).toArray((err, files) => {
       console.log(files, "type", typeof files, files.length);
       if (files.length > 0) {
@@ -108,9 +108,11 @@ router.post("/home", upload, async function (req, res, next) {
     var empDetails = new empModel({
       name: req.body.uname,
       email: req.body.email,
+      uploadType: req.body.uploadType,
       image: imgName,
       username:store.get("loggeduser"),
     });
+
     empDetails.save(function (err, req1) {
       if (err) throw err;
       var employee = empModel.find({username:store.get("loggeduser")});
@@ -134,16 +136,16 @@ router.post("/search/", function (req, res, next) {
   var fltrImage = req.body.fltrImage;
 
   if (fltrName != "" && fltrEmail != "" && fltrImage != "") {
-    var flterParameter = { name: fltrName, email: fltrEmail, image: fltrImage, username:store.get("loggeduser") };
+    var flterParameter = { name: fltrName, email: fltrEmail, uploadType: fltrImage, username:store.get("loggeduser") };
   } 
   else if (fltrName != "" && fltrEmail == "" && fltrImage != "") {
-    var flterParameter = { name: fltrName, image: fltrImage , username:store.get("loggeduser")};
+    var flterParameter = { name: fltrName, uploadType: fltrImage , username:store.get("loggeduser")};
   }
    else if (fltrName == "" && fltrEmail != "" && fltrImage != "") {
-    var flterParameter = {email: fltrEmail, image: fltrImage , username:store.get("loggeduser")};
+    var flterParameter = {email: fltrEmail, uploadType: fltrImage , username:store.get("loggeduser")};
   } 
   else if (fltrName == "" && fltrEmail == "" && fltrImage != "") {
-    var flterParameter = { image: fltrImage+"_"+store.get("loggeduser") , username:store.get("loggeduser")};
+    var flterParameter = { uploadType: fltrImage , username:store.get("loggeduser")};
   } 
   else if (fltrName != "" && fltrEmail == "" && fltrImage == "") {
     var flterParameter = { name: fltrName , username:store.get("loggeduser")};

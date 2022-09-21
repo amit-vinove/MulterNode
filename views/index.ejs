@@ -86,15 +86,14 @@
             <div class="col-md-3">
               <div class="form-group">
                 <label for="email" class="col-md-12 control-label"
-                  >By Image Name</label
+                  >By Image Category</label
                 >
                 <div class="col-md-12">
-                  <input
-                    type="text"
-                    class="form-control"
-                    name="fltrImage"
-                    placeholder="Enter Image Name"
-                  />
+                  <select class="form-control" name="fltrImage">
+                    <option value="Personal">Select</option>
+                    <option value="Personal">Personal</option>
+                    <option value="Work">Work</option>
+                  </select>
                 </div>
               </div>
             </div>
@@ -124,6 +123,7 @@
               <th>Name</th>
               <th>Email</th>
               <th>Image Name</th>
+              <th>Category</th>
               <th>Profile Image</th>
               <th>Actions</th>
               <form method="post" action="/sort/">
@@ -155,6 +155,9 @@
                 <% if(row.image){ %>
                 <p><%= row.image.split('_')[0] %></p>
                 <% } %>
+              </td>
+              <td>
+                <p><%= row.uploadType %></p>
               </td>
               <td>
                 <% if(row.image){ %>
@@ -254,6 +257,19 @@
                       name="email"
                       placeholder="Email Address"
                     />
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="icode" class="col-md-3 control-label">
+                    Category</label
+                  >
+                  <div class="col-md-9">
+                    <select class="form-control" name="uploadType" required>
+                      <option value="Personal">Select</option>
+                      <option value="Personal">Personal</option>
+                      <option value="Work">Work</option>
+                    </select>
                   </div>
                 </div>
 

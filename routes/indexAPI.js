@@ -58,8 +58,8 @@ var upload = multer({
   storage,
 }).single("file");
 
-router.get("/getData", function (req, res, next) {
-  var employee = empModel.find({username:'Amitk123'});
+router.get("/getData/:username", function (req, res, next) {
+  var employee = empModel.find({username:req.params.username});
   employee.exec(function (err, data) {
     if (err) throw err;
     return res.send(data);
@@ -89,10 +89,10 @@ router.post("/uploadImage", upload, async function (req, res, next) {
     return res.send("Image Already Exists");
   } else {
     var empDetails = new empModel({
-      name: req.body.uname,
+      name: req.body.name,
       email: req.body.email,
       image: imgName,
-      username:req.body.loggeduser,
+      username:req.body.username,
     });
     empDetails.save(function (err, req1) {
       if (err) throw err;
